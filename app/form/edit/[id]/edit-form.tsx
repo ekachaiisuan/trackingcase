@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -13,17 +12,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner"
 import { useState } from "react";
-import { insertForm } from "@/app/action/insertform";
+import { updateCase } from "@/app/action/updatecase";
+import { useRouter } from "next/navigation";
 
-export default function Form() {
+export default function EditForm({ initialData, id }: { initialData: any, id: string }) {
+    const router = useRouter();
     const [formData, setFormData] = useState({
-        blackno: "",
-        plaintiff: "",
-        accused: "",
-        timeat: "",
-        room: "",
-        department: "",
-        remarks: "",
+        blackno: initialData.blackno || "",
+        plaintiff: initialData.plaintiff || "",
+        accused: initialData.accused || "",
+        timeat: initialData.timeat || "",
+        room: initialData.room || "",
+        department: initialData.department || "",
+        remarks: initialData.remarks || "",
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,23 +38,22 @@ export default function Form() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await insertForm(formData);
-            toast.success("Event has been created.")
-
+            await updateCase(id, formData);
+            toast.success("Case updated successfully");
+            router.push("/form/view");
         } catch (error) {
             console.error(error);
-            toast.error("Create failed");
+            toast.error("Update failed");
         }
-        // Here you would typically send the data to an API
     };
 
     return (
         <div className="flex min-h-screen w-full flex-col items-center justify-center p-4">
             <Card className="w-full max-w-2xl">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Case Tracking Form</CardTitle>
+                    <CardTitle className="text-2xl">Edit Case Tracking Form</CardTitle>
                     <CardDescription>
-                        Enter the case details below.
+                        Edit the case details below.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -133,7 +133,7 @@ export default function Form() {
                         </div>
 
                         <div className="flex justify-end">
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit">Update</Button>
                         </div>
 
                     </form>

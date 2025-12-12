@@ -1,4 +1,4 @@
-import RealtimeCases from "./realtime-cases";
+import RealtimeCases from "@/components/realtime-cases";
 
 export default function Dashboard() {
     return (

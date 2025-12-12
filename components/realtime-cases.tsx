@@ -43,10 +43,20 @@ export default function RealtimeCases() {
             .channel("realtime-cases")
             .on(
                 "postgres_changes",
-                { event: "INSERT", schema: "public", table: "cases" },
+                { event: "*", schema: "public", table: "cases" },
                 (payload) => {
-                    console.log("New case received:", payload);
-                    setCases((prev) => [payload.new as CaseRecord, ...prev]);
+                    console.log("Realtime event received:", payload);
+                    setCases((prev) => {
+                        if (payload.eventType === 'DELETE') {
+                            // payload.old contains the ID of the deleted record
+                            return prev.filter(c => c.id !== payload.old.id);
+                        } else {
+                            // INSERT or UPDATE
+                            const newCase = payload.new as CaseRecord;
+                            const filtered = prev.filter(p => p.id !== newCase.id);
+                            return [newCase, ...filtered];
+                        }
+                    });
                 }
             )
             .subscribe();
@@ -95,6 +105,7 @@ export default function RealtimeCases() {
                                         <TableCell>{c.room}</TableCell>
                                         <TableCell>{c.department}</TableCell>
                                         <TableCell>{c.remarks}</TableCell>
+                                        {/* Added actions column if needed, or just fix key issue. User asked to fix error first. */}
                                     </TableRow>
                                 ))
                             )}

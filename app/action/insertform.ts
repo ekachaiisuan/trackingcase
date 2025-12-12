@@ -31,5 +31,5 @@ export async function insertForm(data: CaseData) {
         throw new Error("Failed to insert data");
     }
 
-    // redirect("/");
+    redirect("/form/view");
 }
