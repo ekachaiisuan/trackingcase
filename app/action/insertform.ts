@@ -8,9 +8,10 @@ export type CaseData = {
     plaintiff: string;
     accused: string;
     timeat: string;
-    room: string;
+    typereq: string;
     department: string;
     remarks: string;
+    namereq: string;
 };
 
 export async function insertForm(data: CaseData) {
@@ -21,15 +22,21 @@ export async function insertForm(data: CaseData) {
         plaintiff: data.plaintiff,
         accused: data.accused,
         timeat: data.timeat,
-        room: data.room,
+        typereq: data.typereq,
         department: data.department,
         remarks: data.remarks,
+        namereq: data.namereq,
     });
 
     if (error) {
-        console.error("Error inserting data:", error);
-        throw new Error("Failed to insert data");
+        if (error.code === '303') {
+            // 303 See Other: Ignore this error to allow redirect to proceed
+            console.log("Supabase returned 303, proceeding to redirect...");
+            throw new Error("Redirecting to view page");
+        } else {
+            console.error("Error inserting data:", error);
+            throw new Error("Failed to insert data");
+        }
     }
-
     redirect("/form/view");
 }

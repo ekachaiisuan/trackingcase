@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner"
 import { useState } from "react";
 import { insertForm } from "@/app/action/insertform";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function Form() {
     const [formData, setFormData] = useState({
@@ -21,9 +23,10 @@ export default function Form() {
         plaintiff: "",
         accused: "",
         timeat: "",
-        room: "",
+        typereq: "",
         department: "",
         remarks: "",
+        namereq: "",
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,10 +43,15 @@ export default function Form() {
             await insertForm(formData);
             toast.success("Event has been created.")
 
-        } catch (error) {
-            console.error(error);
-            toast.error("Create failed");
+        } catch (error: any) {
+            if (error.code === '303' || error.message.includes("Redirecting to view page")) {
+                toast.success("supabase redirect");
+            } else {
+                console.error(error);
+                toast.error("Create failed");
+            }
         }
+
         // Here you would typically send the data to an API
     };
 
@@ -51,29 +59,29 @@ export default function Form() {
         <div className="flex min-h-screen w-full flex-col items-center justify-center p-4">
             <Card className="w-full max-w-2xl">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Case Tracking Form</CardTitle>
+                    <CardTitle className="text-2xl">สร้างข้อมูลติดตามสำนวนคดี</CardTitle>
                     <CardDescription>
-                        Enter the case details below.
+                        กรุณากรอกรายละเอียดติดตามสำนวนคดี
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="grid gap-6">
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="blackno">Black No</Label>
+                                <Label htmlFor="blackno">หมายเลขดำ</Label>
                                 <Input
                                     id="blackno"
-                                    placeholder="Enter Black No"
+                                    placeholder="อทดำ"
                                     value={formData.blackno}
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="timeat">Time At</Label>
+                                <Label htmlFor="timeat">เวลาเริ่ม</Label>
                                 <Input
+                                    type="time"
                                     id="timeat"
-                                    placeholder="Enter Time"
                                     value={formData.timeat}
                                     onChange={handleChange}
                                 />
@@ -82,19 +90,19 @@ export default function Form() {
 
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="plaintiff">Plaintiff</Label>
+                                <Label htmlFor="plaintiff">โจทก์</Label>
                                 <Input
                                     id="plaintiff"
-                                    placeholder="Enter Plaintiff Name"
+                                    placeholder="โจทก์"
                                     value={formData.plaintiff}
                                     onChange={handleChange}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="accused">Accused</Label>
+                                <Label htmlFor="accused">จำเลย</Label>
                                 <Input
                                     id="accused"
-                                    placeholder="Enter Accused Name"
+                                    placeholder="จำเลย"
                                     value={formData.accused}
                                     onChange={handleChange}
                                 />
@@ -103,37 +111,50 @@ export default function Form() {
 
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="room">Room</Label>
+                                <Label htmlFor="typereq">ประเภทคำขอ</Label>
                                 <Input
-                                    id="room"
-                                    placeholder="Enter Room"
-                                    value={formData.room}
+                                    id="typereq"
+                                    placeholder="ประเภทคำขอ"
+                                    value={formData.typereq}
                                     onChange={handleChange}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="department">Department</Label>
+                                <Label htmlFor="namereq">ชื่อผู้ขอ</Label>
+                                <Input
+                                    id="namereq"
+                                    placeholder="ชื่อผู้ขอ"
+                                    value={formData.namereq}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="department">กลุ่มงาน</Label>
                                 <Input
                                     id="department"
-                                    placeholder="Enter Department"
+                                    placeholder="ใส่กลุ่มงานที่กำลังดำเนินการ"
                                     value={formData.department}
                                     onChange={handleChange}
                                 />
                             </div>
+
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="remarks">Remarks</Label>
+                            <Label htmlFor="remarks">ขั้นตอนการดำเนินการ</Label>
                             <Input
                                 id="remarks"
-                                placeholder="Enter Remarks"
+                                placeholder="ใส่รายละเอียดการดำเนินการ"
                                 value={formData.remarks}
                                 onChange={handleChange}
                             />
                         </div>
 
-                        <div className="flex justify-end">
-                            <Button type="submit">Submit</Button>
+                        <div className="flex justify-between">
+                            <Link href="/form/view">
+                                <Button variant="default" type="button">กลับ</Button>
+                            </Link>
+                            <Button type="submit">บันทึก</Button>
                         </div>
 
                     </form>
