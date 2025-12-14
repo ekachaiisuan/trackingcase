@@ -1,17 +1,19 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
 
 export type CaseData = {
     blackno: string;
     plaintiff: string;
     accused: string;
     timeat: string;
-    typereq: string;
+    typereq?: string;
     department: string;
     remarks: string;
-    namereq: string;
+    namereq?: string;
+    room?: string;
 };
 
 export async function insertForm(data: CaseData) {
@@ -38,5 +40,5 @@ export async function insertForm(data: CaseData) {
             throw new Error("Failed to insert data");
         }
     }
-    redirect("/form/view");
+    revalidatePath("/form/view");
 }

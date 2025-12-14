@@ -15,10 +15,13 @@ import { toast } from "sonner"
 import { useState } from "react";
 import { insertForm } from "@/app/action/insertform";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { DepartmentSelect } from "@/components/department-select";
+import { useRouter } from "next/navigation";
+
 
 export default function Form() {
-    const [formData, setFormData] = useState({
+    const router = useRouter();
+    const initialFormData = {
         blackno: "",
         plaintiff: "",
         accused: "",
@@ -27,7 +30,9 @@ export default function Form() {
         department: "",
         remarks: "",
         namereq: "",
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormData);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -41,14 +46,16 @@ export default function Form() {
         e.preventDefault();
         try {
             await insertForm(formData);
-            toast.success("Event has been created.")
+            toast.success("บันทึกข้อมูลสำเร็จ")
+            setFormData(initialFormData);
+            // router.push("/form/view");
 
         } catch (error: any) {
             if (error.code === '303' || error.message.includes("Redirecting to view page")) {
                 toast.success("supabase redirect");
             } else {
                 console.error(error);
-                toast.error("Create failed");
+                toast.error("บันทึกข้อมูลไม่สำเร็จ");
             }
         }
 
@@ -130,11 +137,11 @@ export default function Form() {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="department">กลุ่มงาน</Label>
-                                <Input
-                                    id="department"
-                                    placeholder="ใส่กลุ่มงานที่กำลังดำเนินการ"
+                                <DepartmentSelect
                                     value={formData.department}
-                                    onChange={handleChange}
+                                    onValueChange={(value) =>
+                                        setFormData((prev) => ({ ...prev, department: value }))
+                                    }
                                 />
                             </div>
 

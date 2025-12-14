@@ -8,6 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import CaseActions from "./case-actions";
+import { StatusSelect } from "@/components/status-select";
 
 export default async function CaseTable() {
     const cases = await getCases();
@@ -26,12 +27,13 @@ export default async function CaseTable() {
                         <TableHead>ชื่อผู้ขอ</TableHead>
                         <TableHead>กลุ่มงาน</TableHead>
                         <TableHead>ขั้นตอนการดำเนินการ</TableHead>
+                        <TableHead>สถานะ</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {cases.map((item: any, index: number) => (
-                        <TableRow key={index}>
+                        <TableRow key={item.id}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell className="font-medium">{item.blackno}</TableCell>
                             <TableCell>{item.plaintiff}</TableCell>
@@ -41,6 +43,9 @@ export default async function CaseTable() {
                             <TableCell>{item.namereq}</TableCell>
                             <TableCell>{item.department}</TableCell>
                             <TableCell>{item.remarks}</TableCell>
+                            <TableCell>
+                                <StatusSelect id={item.id} currentStatus={item.statuswrk} />
+                            </TableCell>
                             <TableCell className="text-right">
                                 <CaseActions id={item.id} />
                             </TableCell>

@@ -2,20 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CaseData } from "@/app/action/insertform";
-
-// We need to extend CaseData to include an ID or createdAt if we want to use them as keys, 
-// but Supabase returns the full record. For now let's assume the shape matches CaseData plus id.
-type CaseRecord = CaseData & { id: number; created_at: string };
+import { DataTable } from "@/components/data-table";
+import { columns, CaseRecord } from "@/components/cases-columns";
 
 export default function RealtimeCases() {
     const [cases, setCases] = useState<CaseRecord[]>([]);
@@ -27,7 +16,7 @@ export default function RealtimeCases() {
             const { data, error } = await supabase
                 .from("cases")
                 .select("*")
-                .order("id", { ascending: false });
+                .order("id", { ascending: true });
 
             if (error) {
                 console.error("Error fetching cases:", error);
@@ -54,7 +43,10 @@ export default function RealtimeCases() {
                             // INSERT or UPDATE
                             const newCase = payload.new as CaseRecord;
                             const filtered = prev.filter(p => p.id !== newCase.id);
+                            // Add new/updated case to the top
                             return [newCase, ...filtered];
+
+
                         }
                     });
                 }
@@ -68,50 +60,13 @@ export default function RealtimeCases() {
 
     return (
         <Card className="w-full">
-            <CardHeader>
-                <CardTitle>Realtime Case Monitor</CardTitle>
+            <CardHeader className="flex flex-row justify-between">
+                <CardTitle>รายงานคดีที่ติดตามแบบ Realtime</CardTitle>
+                <CardTitle>จำนวนคดีที่ติดตาม: {cases.length}</CardTitle>
+
             </CardHeader>
             <CardContent>
-                <div className="rounded-md border">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Black No</TableHead>
-                                <TableHead>Plaintiff</TableHead>
-                                <TableHead>Accused</TableHead>
-                                <TableHead>Time At</TableHead>
-                                <TableHead>Room</TableHead>
-                                <TableHead>Department</TableHead>
-                                <TableHead>Remarks</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {cases.length === 0 ? (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={7}
-                                        className="text-center h-24 text-muted-foreground"
-                                    >
-                                        No cases found.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                cases.map((c) => (
-                                    <TableRow key={c.id}>
-                                        <TableCell>{c.blackno}</TableCell>
-                                        <TableCell>{c.plaintiff}</TableCell>
-                                        <TableCell>{c.accused}</TableCell>
-                                        <TableCell>{c.timeat}</TableCell>
-                                        <TableCell>{c.room}</TableCell>
-                                        <TableCell>{c.department}</TableCell>
-                                        <TableCell>{c.remarks}</TableCell>
-                                        {/* Added actions column if needed, or just fix key issue. User asked to fix error first. */}
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
+                <DataTable columns={columns} data={cases} />
             </CardContent>
         </Card>
     );

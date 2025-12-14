@@ -1,5 +1,8 @@
 import { getCaseById } from "@/app/action/getcase";
+
+
 import EditForm from "./edit-form";
+
 import { notFound } from "next/navigation";
 
 export default async function EditPage({ params }: { params: Promise<{ id: string }> }) {

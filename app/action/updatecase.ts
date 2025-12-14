@@ -12,7 +12,8 @@ export async function updateCase(id: string, data: CaseData) {
         plaintiff: data.plaintiff,
         accused: data.accused,
         timeat: data.timeat,
-        room: data.room,
+        typereq: data.typereq,
+        namereq: data.namereq,
         department: data.department,
         remarks: data.remarks,
     }).eq("id", id);
