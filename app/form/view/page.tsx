@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import CaseTable from "./case-table";
+import DeleteAllButton from "./delete-all-button";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -8,9 +9,13 @@ export default function FormView() {
         <div className="container mx-auto py-10">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold">รายการคำขอ</h1>
-                <Link href="/form/create">
-                    <Button>เพิ่มคำขอ</Button>
-                </Link>
+                <div className="flex gap-2">
+                    <DeleteAllButton />
+                    <Link href="/form/create">
+                        <Button>เพิ่มคำขอ</Button>
+                    </Link>
+                </div>
+
             </div>
             <Suspense fallback={<div>Loading cases...</div>}>
                 <CaseTable />
