@@ -12,7 +12,7 @@ export default function RealtimeCases() {
 
     useEffect(() => {
         // Fetch initial data
-        console.log("ENV", process.env.NEXT_PUBLIC_SUPABASE_URL); //debug code
+
 
         const fetchCases = async () => {
             const { data, error } = await supabase
