@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import RealtimeCases from "@/components/realtime-cases";
+import ScrollText from "./scrolltext";
 export default function Dashboard() {
     return (
-        <div className="container mx-auto py-10">
+        <div className="flex flex-col min-h-screen container max-w-full py-10 text-2xl">
             <div className="flex flex-row justify-between">
                 <h1 className="text-3xl font-bold mb-6">กระดานแสดงผลระบบติดตามสำนวนคดี</h1>
                 <div className="flex gap-5">
@@ -14,7 +15,11 @@ export default function Dashboard() {
             </div>
             <Suspense fallback={<div>Loading...</div>}>
                 <RealtimeCases />
+                <footer className="mt-auto">
+                    <ScrollText />
+                </footer>
             </Suspense>
+
         </div>
     );
 }
