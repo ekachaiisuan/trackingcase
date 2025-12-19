@@ -30,6 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -58,10 +59,44 @@
   }
 }
 
+@layer utilities {
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .animate-marquee {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+  }
+
+  @keyframes snowfall {
+    0% {
+      transform: translateY(-10vh) translateX(0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateY(100vh) translateX(20px);
+      opacity: 0;
+    }
+  }
+
+  .animate-snowfall {
+    animation: snowfall 10s linear infinite;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
