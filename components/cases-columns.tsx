@@ -5,7 +5,7 @@ import { CaseData } from "@/app/action/insertform"
 
 // We define the shape of our data.
 // Since we are extending CaseData with minimal fields for now as per realtime-cases.tsx logic
-export type CaseRecord = CaseData & { id: number; created_at?: string }
+export type CaseRecord = CaseData & { id: number; created_at?: string; statuswrk?: string }
 
 export const columns: ColumnDef<CaseRecord>[] = [
     {

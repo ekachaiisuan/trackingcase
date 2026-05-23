@@ -18,6 +18,7 @@ export default function RealtimeCases() {
             const { data, error } = await supabase
                 .from("cases")
                 .select("*")
+                .or("statuswrk.neq.closed,statuswrk.is.null")
                 .order("id", { ascending: true });
 
             if (error) {
@@ -45,6 +46,9 @@ export default function RealtimeCases() {
                             // INSERT or UPDATE
                             const newCase = payload.new as CaseRecord;
                             const filtered = prev.filter(p => p.id !== newCase.id);
+                            if (newCase.statuswrk === "closed") {
+                                return filtered;
+                            }
                             // Add new/updated case to the top
                             return [newCase, ...filtered];
 

@@ -35,6 +35,7 @@ export function StatusSelect({ id, currentStatus }: StatusSelectProps) {
                 <SelectItem value="pending">pending</SelectItem>
                 <SelectItem value="doing">doing</SelectItem>
                 <SelectItem value="fin">fin</SelectItem>
+                <SelectItem value="closed">closed</SelectItem>
             </SelectContent>
         </Select>
     );

@@ -1,4 +1,5 @@
 import { getCases } from "@/app/action/getcases";
+import { formatThaiDate } from "@/lib/date-utils";
 import {
     Table,
     TableBody,
@@ -10,8 +11,8 @@ import {
 import CaseActions from "./case-actions";
 import { StatusSelect } from "@/components/status-select";
 
-export default async function CaseTable() {
-    const cases = await getCases();
+export default async function CaseTable({ showClosed = false }: { showClosed?: boolean }) {
+    const cases = await getCases(showClosed);
 
     return (
         <div className="rounded-md border">
@@ -19,6 +20,7 @@ export default async function CaseTable() {
                 <TableHeader>
                     <TableRow>
                         <TableHead>ลำดับ</TableHead>
+                        <TableHead>วันทีรับคำขอ</TableHead>
                         <TableHead>อทดำ</TableHead>
                         <TableHead>โจทก์</TableHead>
                         <TableHead>จำเลย</TableHead>
@@ -35,6 +37,7 @@ export default async function CaseTable() {
                     {cases.map((item: any, index: number) => (
                         <TableRow key={item.id}>
                             <TableCell>{index + 1}</TableCell>
+                            <TableCell>{formatThaiDate(item.created_at)}</TableCell>
                             <TableCell className="font-medium">{item.blackno}</TableCell>
                             <TableCell>{item.plaintiff}</TableCell>
                             <TableCell>{item.accused}</TableCell>

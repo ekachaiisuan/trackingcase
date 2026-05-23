@@ -2,9 +2,18 @@
 
 import { createClient } from "@/lib/supabase/server";
 
-export async function getCases() {
+export async function getCases(showClosed: boolean = false) {
     const supabase = await createClient();
-    const { data, error } = await supabase.from("cases").select("*").order("id", { ascending: false });
+    
+    let query = supabase.from("cases").select("*");
+    
+    if (showClosed) {
+        query = query.eq("statuswrk", "closed");
+    } else {
+        query = query.or("statuswrk.neq.closed,statuswrk.is.null");
+    }
+    
+    const { data, error } = await query.order("id", { ascending: false });
 
     if (error) {
         console.error("Error fetching cases:", error);
